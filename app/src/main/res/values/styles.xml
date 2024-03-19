@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppEditText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AppEditText.S20">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="AppEditText.S30">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">Ghost_Leg_Game</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="bottom_nav_menu_game_label">게 임</string>
+    <string name="bottom_nav_menu_setting_label">설 정</string>
+
+    <string name="rv_add_hint_label">player_Name</string>
+    <string name="rv_setting_hint_label">team_Name</string>
+    <string name="rv_game_result_penalty_label">penalty</string>
+
+
+    <string name="fragment_setting_et_hint_label">abc</string>
+    <string name="fragment_setting_tv_hint_label">N 명</string>
+    <string name="toolbar_fragment_setting">그룹 보기</string>
+
+
+    <string name="activity_add_btn_add_label">추가</string>
+    <string name="activity_add_et_player_hint_label">멤버 이름</string>
+    <string name="activity_add_et_group_hint_label">그룹 이름</string>
+    <string name="activity_add_toolbar">그룹 생성</string>
+    <string name="activity_modify_toolbar">그룹 수정</string>
+
+    <string name="fragment_home_et_gameName_hint">커피 내기</string>
+    <string name="fragment_home_tv_group_label">그룹:</string>
+    <string name="rv_edit_textview_hint">당첨</string>
+
+    <string name="delete_group_message">그룹 [%s]을 삭제하시겠습니까? 삭제 후 되돌릴 수 없습니다!</string>
+    <string name="dialog_title">안내</string>
+    <string name="cancel">취소</string>
+    <string name="cancel_message">취소</string>
+    <string name="delete">삭제</string>
+    <string name="activity_game_toolbar">게임 결과</string>
+    <string name="activity_game_btn_result">결과 보기</string>
+    <string name="activity_game_btn_result_ok">확 인</string>
+    <string name="activity_game_tv_game_name_label">게임:</string>
+</resources>

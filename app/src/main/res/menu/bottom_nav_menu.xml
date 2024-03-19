@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_game"
+        android:icon="@drawable/ic_game"
+        android:title="@string/bottom_nav_menu_game_label" />
+    <item
+        android:id="@+id/menu_setting"
+        android:icon="@drawable/ic_setting"
+        android:title="@string/bottom_nav_menu_setting_label" />
+</menu>

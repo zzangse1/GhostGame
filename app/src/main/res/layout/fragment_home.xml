@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragment.HomeFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_home"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="홈" />
+
+    <EditText
+        android:id="@+id/et_gameName"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/et_box"
+        android:gravity="center"
+        android:hint="@string/fragment_home_et_gameName_hint"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_group_label"
+        style="@style/AppEditText.S20"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:gravity="center"
+        android:paddingEnd="10dp"
+        android:text="@string/fragment_home_tv_group_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+
+    <com.toptoche.searchablespinnerlibrary.SearchableSpinner
+        android:id="@+id/spinner_home"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toStartOf="@id/tv_group_count"
+        app:layout_constraintStart_toEndOf="@id/tv_group_label"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+
+    <TextView
+        android:id="@+id/tv_group_count"
+        style="@style/AppEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:paddingEnd="10dp"
+        android:text="0 명"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/spinner_home"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+
+    <Button
+        android:id="@+id/btn_gameStart"
+        android:layout_width="300dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
+        android:text="Start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tv_random_label"
+        style="@style/AppEditText.S20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:text="벌칙 정하기 "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinner_home" />
+
+    <EditText
+        android:id="@+id/et_random_label_hint"
+        style="@style/AppEditText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/et_box"
+        android:gravity="center"
+        android:hint="벌칙만 작성해주세요"
+        android:textColor="@color/gray"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_random_label"
+        app:layout_constraintEnd_toStartOf="@+id/ib_add"
+        app:layout_constraintStart_toEndOf="@id/tv_random_label"
+        app:layout_constraintTop_toTopOf="@id/tv_random_label" />
+
+    <ImageButton
+        android:id="@+id/ib_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_random_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_random_label" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_game_edit"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_gameStart"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_random_label"
+        tools:listitem="@layout/rv_tv_delete" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
