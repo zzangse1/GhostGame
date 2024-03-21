@@ -6,6 +6,9 @@ public class GameModify {
     public GameModify(String playerName) {
         this.playerName = playerName;
     }
+    public GameModify( ) {
+
+    }
 
     public String getPlayerName() {
         return playerName;

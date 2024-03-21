@@ -22,7 +22,8 @@ public class ModifyAdapter extends RecyclerView.Adapter<ModifyAdapter.ViewHolder
     private ModifyAdapterClick modifyAdapterClick;
 
     public interface ModifyAdapterClick{
-        void onClickDelete(View v,int pos);
+       // void onClickDelete(View v,int pos);
+        void onClickDelete(GameModify gameModify);
         void onClickInfo(GameModify gameModify);
     }
 
@@ -49,14 +50,23 @@ public class ModifyAdapter extends RecyclerView.Adapter<ModifyAdapter.ViewHolder
         if (gameModify != null) { // gameModify가 null이 아닌지 확인
             String playerName = gameModify.getPlayerName();
             holder.bind(playerName);
+//            holder.ib_Delete.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int pos = holder.getAdapterPosition();
+//                    modifyAdapterClick.onClickDelete(v,pos);
+//                }
+//            });
             holder.ib_Delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int pos = holder.getAdapterPosition();
-                    modifyAdapterClick.onClickDelete(v,pos);
+                    if (modifyAdapterClick != null) {
+                        modifyAdapterClick.onClickDelete(gameModify); // 올바른 객체와 함께 호출하는지 확인
+                    } else {
+                        Log.d("onClickDelete", "ModifyAdapterClick is null");
+                    }
                 }
             });
-
             holder.tv_playerName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

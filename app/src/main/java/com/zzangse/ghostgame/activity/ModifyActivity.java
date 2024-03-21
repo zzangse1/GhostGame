@@ -1,8 +1,13 @@
 package com.zzangse.ghostgame.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,8 +46,8 @@ public class ModifyActivity extends AppCompatActivity {
     private TeamInfoViewModel teamInfoViewModel;
     private TeamInfo teamInfo;
     private ArrayList<GameModify> gameModifyArrayList = new ArrayList<>();
-    private ArrayList<String> teamNameList = new ArrayList<>();
     private ArrayList<String> mPlayerNameList;
+    private ArrayList<String> teamNameList = new ArrayList<>();
     private ModifyAdapter adapter;
     private RecyclerView recyclerView;
     private RoomDB roomDB;
@@ -85,29 +91,71 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
 
+
     private void initRecyclerView() {
         // 리싸이클러뷰 레이아웃 매니어 설정
         recyclerView = findViewById(R.id.rv_modify);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // 리싸이클러뷰 어댑터 설정
-        adapter = new ModifyAdapter(this, new ArrayList<>());
-        recyclerView.setAdapter(adapter);
-        adapter.setOnClick(new ModifyAdapter.ModifyAdapterClick() {
-//            @Override
-//            public void onClickDelete(GameModify gameModify) {
-//                deleteItem(gameModify.getPlayerName().indexOf(0));
-//            }
 
+       // adapter = new ModifyAdapter(this, new ArrayList<>());
+        adapter = new ModifyAdapter(this, gameModifyArrayList);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnClick(new ModifyAdapter.ModifyAdapterClick() {
             @Override
-            public void onClickDelete(View v, int pos) {
-                deleteItem(pos);
+            public void onClickDelete(GameModify gameModify) {
+                AlertDialog dialog = createDialog(gameModify.getPlayerName(),gameModifyArrayList.indexOf(gameModify));
+                dialog.show();
             }
+
+//            @Override
+//            public void onClickDelete(View v, int pos) {
+//                AlertDialog dialog = createDialog(v.getTransitionName(),pos);
+//                dialog.show();
+//            }
 
             @Override
             public void onClickInfo(GameModify gameModify) {
                 setRandomText(gameModify.getPlayerName());
             }
         });
+
+
+    }
+
+
+
+    public AlertDialog createDialog(String randName, int pos) {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_title)
+                .setIcon(R.drawable.ic_delete)
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                        Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
+                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d("createDialog", randName);
+                        Toast.makeText(getApplicationContext(), "벌칙 [ " + randName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                        deleteItem(pos);
+                    }
+                })
+                .create();
+
+        String deleteEditMsg = "해당 벌칙을 삭제하시겠습니까? [ "+randName+" ] 삭제 후 되돌릴 수 없습니다!";
+        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, randName));
+        return dialog;
+    }
+
+    private Spanned getHtmlFormattedText(String messageTemplate, String teamName) {
+        String formattedMessage = String.format(messageTemplate, teamName);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return HtmlCompat.fromHtml(formattedMessage, HtmlCompat.FROM_HTML_MODE_COMPACT);
+        } else {
+            @SuppressWarnings("deprecation")
+            Spanned spanned = Html.fromHtml(formattedMessage);
+            return spanned;
+        }
     }
 
     private void setupToolbarBackButton() {
@@ -171,9 +219,9 @@ public class ModifyActivity extends AppCompatActivity {
                 mGroupName = modifyBinding.spinnerModify.getItemAtPosition(position).toString();
                 nowSpinnerPos = position;
                 Log.d("setSpinnerEvents", "spinner: " + mGroupName);
+                gameModifyArrayList.clear(); // 스피너 값을 선택시 list를 비우고 새로선택한 스피너의 값을 띄움
                 countTeam(mGroupName);
                 getPlayer(mGroupName);
-                gameModifyArrayList.clear(); // 스피너 값을 선택시 list를 비우고 새로선택한 스피너의 값을 띄움
                 modifyBinding.spinnerModify.setSelection(position);
             }
 
