@@ -90,9 +90,9 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addPlayerToRecyclerView() {
-        RecyclerView recyclerView = binding.rvGameResult;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GameResultAdapter(this, gameResultArrayList);
+//        RecyclerView recyclerView = binding.rvGameResult;
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        adapter = new GameResultAdapter(this, gameResultArrayList);
         recyclerView.setAdapter(adapter);
         for (int i = 0; i < mGamePenaltySize; i++) {
             GameResult newItem = new GameResult(mPlayerNameList.get(i), mGamePenaltyList.get(i));

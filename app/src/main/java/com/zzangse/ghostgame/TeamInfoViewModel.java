@@ -11,7 +11,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.zzangse.ghostgame.database.RoomDB;
 import com.zzangse.ghostgame.database.TeamInfo;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 public class TeamInfoViewModel extends AndroidViewModel {
@@ -42,10 +41,6 @@ public class TeamInfoViewModel extends AndroidViewModel {
     public TeamInfoViewModel(@NonNull Application application) {
         super(application);
         roomDB = RoomDB.getInstance(application.getApplicationContext());
-    }
-
-    public LiveData<List<TeamInfo>> getAllTeam() {
-        return roomDB.getTeamInfoDao().findTeam();
     }
 
     public LiveData<List<TeamInfo>> getShowTeam() {

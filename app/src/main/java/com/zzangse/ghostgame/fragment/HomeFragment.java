@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -25,6 +26,9 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.skydoves.balloon.ArrowOrientation;
+import com.skydoves.balloon.Balloon;
+import com.skydoves.balloon.BalloonAnimation;
 import com.zzangse.ghostgame.GameEditPenalty;
 import com.zzangse.ghostgame.R;
 import com.zzangse.ghostgame.TeamInfoViewModel;
@@ -49,6 +53,7 @@ public class HomeFragment extends Fragment {
     private ArrayList<GameEditPenalty> gameEditPenaltyList = new ArrayList<>();
     private String mGroupName;
     private String mGameName;
+    private Balloon balloon;
     private int teamInfoSize=0;
 
     @Override
@@ -62,6 +67,7 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeBinding = FragmentHomeBinding.inflate(inflater);
+
         return homeBinding.getRoot();
     }
 
@@ -74,9 +80,30 @@ public class HomeFragment extends Fragment {
         initRecycler();
         setBtnClickEvent();
         moveToAddGameActivity();
-
+        initTooltip();
+        showTooltip();
+        test();
     }
 
+
+    private void initTooltip() {
+        balloon = new Balloon.Builder(requireContext())
+                .setArrowSize(10)
+                //.setIconDrawable(ContextCompat.getDrawable(this, R.drawable.ic_info))
+                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                .setArrowOrientation(ArrowOrientation.END)
+                .setArrowPosition(0.3f)
+                //.setArrowVisible(true)
+                .setWidthRatio(0.3f) // 말풍선 넓이
+                .setHeight(50)
+                .setTextSize(14f)
+                .setCornerRadius(4f)
+                .setAlpha(0.9f)
+                .setText("사용 설명서")
+                .setBalloonAnimation(BalloonAnimation.FADE)
+                .build();
+
+    }
     private void initializeRoomDB() {
         roomDB = RoomDB.getInstance(getContext());
     }
@@ -127,20 +154,6 @@ public class HomeFragment extends Fragment {
         adapter = new EditAdapter(getContext(), gameEditPenaltyList);
         recyclerView.setAdapter(adapter);
 
-        // adapter 기능 구현
-//        adapter.setOnclick(new EditAdapter.EditAdapterClick() {
-//            @Override
-//            public void onClickDelete(EditAdapter.ViewHolder holder, int position, View v) {
-//                //AlertDialog dialog = createDialog(holder.itemView.toString(), position);
-//                AlertDialog dialog = createDialog(getResources().getResourceEntryName(v.getId()), position);
-//                dialog.show();
-//            }
-//
-//            @Override
-//            public void onClickInfo(EditAdapter.ViewHolder holder, int position, View v) {
-//                setRandomText(holder.itemView.toString());
-//            }
-//        });
         adapter.setOnclick(new EditAdapter.EditAdapterClick() {
             @Override
             public void onClickDelete(GameEditPenalty gameEditPenalty) {
@@ -184,6 +197,37 @@ public class HomeFragment extends Fragment {
         return dialog;
     }
 
+    private void test() {
+        homeBinding.ibTooltip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog dialog = createDialog();
+                dialog.show();
+            }
+        });
+    }
+    // 설명
+    public AlertDialog createDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle(R.string.dialog_title)
+                .setIcon(R.drawable.ic_delete)
+                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                        Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
+                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Toast.makeText(getContext(), "벌칙 [ " + "ㄴㅇ" + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+
+                    }
+                })
+                .create();
+
+//        String deleteEditMsg = "해당 벌칙을 삭제하시겠습니까? [ "+"randName"+" ] 삭제 후 되돌릴 수 없습니다!";
+//        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, randName));
+        return dialog;
+    }
+
     private Spanned getHtmlFormattedText(String messageTemplate, String teamName) {
         String formattedMessage = String.format(messageTemplate, teamName);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -201,6 +245,10 @@ public class HomeFragment extends Fragment {
             gameEditPenaltyList.remove(pos);
             adapter.notifyItemRemoved(pos);
         }
+    }
+
+    private void showTooltip() {
+        balloon.showAlignStart(homeBinding.ibTooltip);
     }
 
     private void updateSpinner(ArrayList<String> teamNameList) {

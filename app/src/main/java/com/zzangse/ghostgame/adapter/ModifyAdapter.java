@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class ModifyAdapter extends RecyclerView.Adapter<ModifyAdapter.ViewHolder> {
     private Context context;
     private ArrayList<GameModify> gameModifyArrayList;
-    private ModifyAdapterClick modifyAdapterClick;
+    private ModifyAdapterClick modifyAdapterClick=null;
 
     public interface ModifyAdapterClick{
        // void onClickDelete(View v,int pos);
@@ -46,7 +46,7 @@ public class ModifyAdapter extends RecyclerView.Adapter<ModifyAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ModifyAdapter.ViewHolder holder, int position) {
-        GameModify gameModify = gameModifyArrayList.get(position);
+        final GameModify gameModify = gameModifyArrayList.get(position);
         if (gameModify != null) { // gameModify가 null이 아닌지 확인
             String playerName = gameModify.getPlayerName();
             holder.bind(playerName);
