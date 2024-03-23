@@ -52,8 +52,9 @@ public class ModifyActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RoomDB roomDB;
     private String mGroupName;
+    private String mPlayerName;
     private int teamInfoSize = 0;
-    private int nowSpinnerPos=0;
+    private int nowSpinnerPos = 0;
 
     /*
      * 스피너 가져오기
@@ -61,6 +62,9 @@ public class ModifyActivity extends AppCompatActivity {
      * 팀이름을 기반으로 기존에 있던 playerName을 ArrayList에 넣기
      * ArrayList와 어댑터 연결해서 기존의 이름 리싸이클러뷰에 보이기
      * 추가 / 삭제 구현
+     * 멤버이름 중복 불가능
+     * 그룹 중복 생성 금지
+     * 팀생성 추가를 누르면 팀이름 못 바꾸게
      * */
 
     @Override
@@ -77,10 +81,24 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
     private void deleteItem(int pos) {
-       // if (pos != RecyclerView.NO_POSITION) {
-            gameModifyArrayList.remove(pos);
-            adapter.notifyItemRemoved(pos);
-       // }
+        // if (pos != RecyclerView.NO_POSITION) {
+        gameModifyArrayList.remove(pos);
+        adapter.notifyItemRemoved(pos);
+        countTeam(mGroupName);
+        // }
+    }
+
+
+    @SuppressLint("CheckResult")
+    private void deleteRoom(String teamName, String playerName, int pos) {
+        roomDB.getTeamInfoDao().deletePlayer(teamName, playerName)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        ()->{
+                            deleteItem(pos);
+                        }
+                );
     }
     private void initRoomDB() {
         roomDB = RoomDB.getInstance(this.getApplicationContext());
@@ -91,29 +109,23 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
 
-
     private void initRecyclerView() {
         // 리싸이클러뷰 레이아웃 매니어 설정
-        recyclerView = findViewById(R.id.rv_modify);
+        recyclerView = modifyBinding.rvModify;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         // 리싸이클러뷰 어댑터 설정
-
-       // adapter = new ModifyAdapter(this, new ArrayList<>());
         adapter = new ModifyAdapter(this, gameModifyArrayList);
-        recyclerView.setAdapter(adapter);
 
         adapter.setOnClick(new ModifyAdapter.ModifyAdapterClick() {
             @Override
             public void onClickDelete(GameModify gameModify) {
-                AlertDialog dialog = createDialog(gameModify.getPlayerName(),gameModifyArrayList.indexOf(gameModify));
+                mPlayerName = gameModify.getPlayerName();
+                Log.d("mPlayerName", mPlayerName);
+                AlertDialog dialog = createDialog(gameModify.getPlayerName(), gameModifyArrayList.indexOf(gameModify));
                 dialog.show();
+
             }
 
-//            @Override
-//            public void onClickDelete(View v, int pos) {
-//                AlertDialog dialog = createDialog(v.getTransitionName(),pos);
-//                dialog.show();
-//            }
 
             @Override
             public void onClickInfo(GameModify gameModify) {
@@ -122,11 +134,11 @@ public class ModifyActivity extends AppCompatActivity {
         });
 
 
+        recyclerView.setAdapter(adapter);
     }
 
 
-
-    public AlertDialog createDialog(String randName, int pos) {
+    public AlertDialog createDialog(String playerName, int pos) {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_title)
                 .setIcon(R.drawable.ic_delete)
@@ -135,15 +147,16 @@ public class ModifyActivity extends AppCompatActivity {
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d("createDialog", randName);
-                        Toast.makeText(getApplicationContext(), "벌칙 [ " + randName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                        deleteItem(pos);
+                        Log.d("createDialog", playerName);
+                        Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                        //deleteItem(pos);
+                        deleteRoom(mGroupName,mPlayerName,pos);
                     }
                 })
                 .create();
 
-        String deleteEditMsg = "해당 벌칙을 삭제하시겠습니까? [ "+randName+" ] 삭제 후 되돌릴 수 없습니다!";
-        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, randName));
+        String deleteEditMsg = "해당 멤버을 삭제하시겠습니까? [ " + playerName + " ] 삭제 후 되돌릴 수 없습니다!";
+        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, playerName));
         return dialog;
     }
 
@@ -159,10 +172,11 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
     private void setupToolbarBackButton() {
-        modifyBinding.toolbarModify.setNavigationOnClickListener(v->finish());
+        modifyBinding.toolbarModify.setNavigationOnClickListener(v -> finish());
     }
+
     private void setRandomText(String text) {
-        Toast.makeText(getApplicationContext(), "벌칙: " + text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "멤버: " + text, Toast.LENGTH_SHORT).show();
     }
 
     // 새로운 멤버 추가
@@ -176,7 +190,7 @@ public class ModifyActivity extends AppCompatActivity {
                     saveTeamInfo(newPlayerName);
                     modifyBinding.etInput.getText().clear();
                 } else {
-                    Toast.makeText(getApplicationContext(),"멤버 이름을 작성해주세요",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "멤버 이름을 작성해주세요", Toast.LENGTH_SHORT).show();
                 }
                 Log.d("onClick: ", mGroupName);
             }
@@ -200,16 +214,20 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
     private void addPlayerToRecyclerView() {
-        RecyclerView recyclerView = modifyBinding.rvModify;
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ModifyAdapter(this, gameModifyArrayList);
-        recyclerView.setAdapter(adapter);
+        // 삭제했음
+       // RecyclerView recyclerView = modifyBinding.rvModify;
+       // recyclerView = modifyBinding.rvModify;
+       // recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //adapter = new ModifyAdapter(this, gameModifyArrayList);
         for (int i = 0; i < mPlayerNameList.size(); i++) {
             GameModify newItem = new GameModify(mPlayerNameList.get(i));
             gameModifyArrayList.add(newItem);
-            Log.d("addPlayerToRecyclerView",gameModifyArrayList.get(i).toString());
+            Log.d("addPlayerToRecyclerView", gameModifyArrayList.get(i).toString());
         }
-        adapter.notifyItemInserted(gameModifyArrayList.size() - 1);
+        // 어댑터 새로고침 (리싸이클러뷰의 아이템과 크기가 전부 변경되기때문)
+        adapter.notifyDataSetChanged();
+       // adapter.notifyItemInserted(gameModifyArrayList.size() - 1);
+       // recyclerView.setAdapter(adapter);
     }
 
     private void setSpinnerEvents() {
@@ -300,7 +318,7 @@ public class ModifyActivity extends AppCompatActivity {
                 for (TeamInfo teamInfo : teamInfoList) {
                     String teamName = teamInfo.getTeamName();
                     teamNameList.add(teamName);
-                    Log.d("teamNameList: ",": "+teamNameList.size());
+                    Log.d("teamNameList: ", ": " + teamNameList.size());
                 }
                 // spinner에 값 삽입
                 updateSpinner(teamNameList);

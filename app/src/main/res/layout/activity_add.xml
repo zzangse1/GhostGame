@@ -17,18 +17,6 @@
         app:title="@string/activity_add_toolbar" />
 
 
-    <ImageButton
-        android:id="@+id/ib_tooltip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/white"
-        android:padding="10dp"
-        android:src="@drawable/ic_info"
-        app:layout_constraintBottom_toTopOf="@id/et_group_input"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/et_group_input"
         android:layout_width="0dp"

@@ -57,6 +57,7 @@ public class SettingFragment extends Fragment {
         roomDB = RoomDB.getInstance(requireContext().getApplicationContext());
     }
 
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,11 +77,21 @@ public class SettingFragment extends Fragment {
         dataLoad(); // 데이터 로드 메소드 호출
     }
 
+
+
     // rootView를 null로 초기화하여 뷰를 해제
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         settingBinding = null;
+        Log.d("test1234","onDestroyView");
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        dataLoad();
     }
 
     @Override
@@ -276,7 +287,7 @@ public class SettingFragment extends Fragment {
                 .subscribe(
                         teamInfoList -> {
                             int teamCount = teamInfoList.size();
-                            if (teamInfoList.size() == 0) {
+                            if (teamInfoList.isEmpty()) {
                                 tv.setText("그룹: " + 0 + " 팀");
                             } else {
                                 tv.setText("그룹: " + teamCount + " 팀");

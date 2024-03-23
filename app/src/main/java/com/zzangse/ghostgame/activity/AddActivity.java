@@ -40,8 +40,10 @@ public class AddActivity extends AppCompatActivity {
     private AddAdapter adapter;
     private RoomDB roomDB;
     private TeamInfo teamInfo;
-    private Balloon balloon;
     private static final String EMPTY_INPUT_MESSAGE = "팀 이름 또는 플레이어 이름을 입력하세요";
+    /*
+    * 팀이름이 겹치면 생성불가능 코드
+    * */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,38 +52,10 @@ public class AddActivity extends AppCompatActivity {
         initialize();
         initData();
         initRecyclerView();
-        initTooltip();
         setupToolbarBackButton();
-        showTooltip();
     }
 
-    private void initTooltip() {
-        balloon = new Balloon.Builder(this)
-                .setArrowSize(10)
-                //.setIconDrawable(ContextCompat.getDrawable(this, R.drawable.ic_info))
-                .setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                .setArrowOrientation(ArrowOrientation.END)
-                .setArrowPosition(0.3f)
-                //.setArrowVisible(true)
-                .setWidthRatio(0.8f) // 말풍선 넓이
-                .setHeight(60)
-                .setTextSize(14f)
-                .setCornerRadius(4f)
-                .setAlpha(0.9f)
-                .setText("그룹이름이 이미 존재하면 인원 추가 가능합니다")
-                .setBalloonAnimation(BalloonAnimation.FADE)
-                .build();
-    }
 
-    private void showTooltip() {
-        binding.ibTooltip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                balloon.showAlignStart(binding.ibTooltip);
-            }
-        });
-
-    }
     private void initialize() {
         roomDB = RoomDB.getInstance(this);
     }
@@ -152,6 +126,7 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
+        binding.etGroupInput.setEnabled(false);
         RecyclerView recyclerView = binding.rvAdd;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         AddAdapter adapter = new AddAdapter(this,teamInfoArrayList);
@@ -177,6 +152,9 @@ public class AddActivity extends AppCompatActivity {
         }
     }
     private void initData() {
-        binding.activityAddBtnAdd.setOnClickListener(view -> addPlayerToRecyclerView());
+        binding.activityAddBtnAdd.setOnClickListener(view ->{
+            addPlayerToRecyclerView();
+
+        } );
     }
 }
