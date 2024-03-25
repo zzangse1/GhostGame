@@ -5,21 +5,17 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.skydoves.balloon.ArrowOrientation;
-import com.skydoves.balloon.Balloon;
-import com.skydoves.balloon.BalloonAnimation;
 import com.zzangse.ghostgame.R;
 import com.zzangse.ghostgame.adapter.AddAdapter;
 import com.zzangse.ghostgame.database.RoomDB;
@@ -42,8 +38,8 @@ public class AddActivity extends AppCompatActivity {
     private TeamInfo teamInfo;
     private static final String EMPTY_INPUT_MESSAGE = "팀 이름 또는 플레이어 이름을 입력하세요";
     /*
-    * 팀이름이 겹치면 생성불가능 코드
-    * */
+     * 팀이름이 겹치면 생성불가능 코드
+     * */
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +48,7 @@ public class AddActivity extends AppCompatActivity {
         initialize();
         initData();
         initRecyclerView();
-        setupToolbarBackButton();
+        onClickToolbarBtn();
     }
 
 
@@ -89,11 +85,35 @@ public class AddActivity extends AppCompatActivity {
             settingFragment.onResume(); // 또는 업데이트를 수행하는 다른 메서드 호출
         }
     }
-
-
-    private void setupToolbarBackButton() {
-        binding.toolbarAdd.setNavigationOnClickListener(view -> finish());
+    private void showDialog() {
+        AlertDialog dialog = createDialog();
+        dialog.show();
     }
+
+    private AlertDialog createDialog() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("정보")
+                .setMessage("저장을 누르지 않고 뒤로 돌아가면 저장되지 않습니다!")
+                .setIcon(R.drawable.ic_groups)
+                .setNegativeButton("취소", (DialogInterface, i) ->
+                        //취소 로직
+                        Toast.makeText(this, "cancel ", Toast.LENGTH_SHORT).show())
+                .setPositiveButton("확인", (DialogInterface, i) -> {
+                    Toast.makeText(this, "pos", Toast.LENGTH_SHORT).show();
+                    //확인 로직
+                    finish();
+                })
+                .create();
+        return dialog;
+    }
+
+    private void onClickToolbarBtn() {
+        binding.toolbarAdd.setNavigationOnClickListener(view ->
+                showDialog()
+        );
+    }
+
+
 
     @SuppressLint("CheckResult")
     private void saveTeamInfo(String playerName) {

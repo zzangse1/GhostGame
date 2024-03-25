@@ -34,4 +34,7 @@
     <string name="activity_game_btn_result">결과 보기</string>
     <string name="activity_game_btn_result_ok">확 인</string>
     <string name="activity_game_tv_game_name_label">게임:</string>
+    <string name="activity_add_btn_label_save">저장</string>
+
+
 </resources>

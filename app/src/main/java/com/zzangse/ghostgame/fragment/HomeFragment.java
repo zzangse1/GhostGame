@@ -192,8 +192,10 @@ public class HomeFragment extends Fragment {
                 })
                 .create();
 
-        String deleteEditMsg = "해당 벌칙을 삭제하시겠습니까? [ "+randName+" ] 삭제 후 되돌릴 수 없습니다!";
-        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, randName));
+        // 글씨색 적용
+        String deleteEditMsg = "해당 벌칙 [ " + randName + " ]을 삭제하시겠습니까?<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
+        dialog.setMessage(HtmlCompat.fromHtml(deleteEditMsg, HtmlCompat.FROM_HTML_MODE_LEGACY));
+
         return dialog;
     }
 
@@ -228,16 +230,6 @@ public class HomeFragment extends Fragment {
         return dialog;
     }
 
-    private Spanned getHtmlFormattedText(String messageTemplate, String teamName) {
-        String formattedMessage = String.format(messageTemplate, teamName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return HtmlCompat.fromHtml(formattedMessage, HtmlCompat.FROM_HTML_MODE_COMPACT);
-        } else {
-            @SuppressWarnings("deprecation")
-            Spanned spanned = Html.fromHtml(formattedMessage);
-            return spanned;
-        }
-    }
 
     // 리싸이클러뷰 아이템 삭제
     private void deleteItem(int pos) {
