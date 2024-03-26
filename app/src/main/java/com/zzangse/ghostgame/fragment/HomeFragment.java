@@ -4,10 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +51,7 @@ public class HomeFragment extends Fragment {
     private String mGroupName;
     private String mGameName;
     private Balloon balloon;
-    private int teamInfoSize=0;
+    private int teamInfoSize = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,9 +101,11 @@ public class HomeFragment extends Fragment {
                 .build();
 
     }
+
     private void initializeRoomDB() {
         roomDB = RoomDB.getInstance(getContext());
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -158,7 +157,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClickDelete(GameEditPenalty gameEditPenalty) {
                 AlertDialog dialog = createDialog(gameEditPenalty.getPenalty(), gameEditPenaltyList.indexOf(gameEditPenalty));
-                Log.d("onClickDelete",gameEditPenalty.getPenalty());
+                Log.d("onClickDelete", gameEditPenalty.getPenalty());
                 dialog.show();
             }
 
@@ -177,25 +176,20 @@ public class HomeFragment extends Fragment {
 
     // 삭제 버튼 클릭시 다이얼로그 창 띄움
     public AlertDialog createDialog(String randName, int pos) {
+        String deleteEditMsg = "해당 벌칙 [ " + randName + " ]을 삭제하시겠습니까?" +
+                "<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_title)
+                .setMessage(HtmlCompat.fromHtml(deleteEditMsg, HtmlCompat.FROM_HTML_MODE_LEGACY))
                 .setIcon(R.drawable.ic_delete)
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("createDialog", randName);
-                        Toast.makeText(getContext(), "벌칙 [ " + randName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                        deleteItem(pos);
-                    }
+                .setPositiveButton("삭제", (DialogInterface, i) -> {
+                    Log.d("createDialog", randName);
+                    Toast.makeText(getContext(), "벌칙 [ " + randName + " ] 이/가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    deleteItem(pos);
                 })
                 .create();
-
-        // 글씨색 적용
-        String deleteEditMsg = "해당 벌칙 [ " + randName + " ]을 삭제하시겠습니까?<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
-        dialog.setMessage(HtmlCompat.fromHtml(deleteEditMsg, HtmlCompat.FROM_HTML_MODE_LEGACY));
-
         return dialog;
     }
 
@@ -208,12 +202,13 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
     // 설명
     public AlertDialog createDialog() {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_title)
                 .setIcon(R.drawable.ic_delete)
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
                     @Override
@@ -224,9 +219,6 @@ public class HomeFragment extends Fragment {
                     }
                 })
                 .create();
-
-//        String deleteEditMsg = "해당 벌칙을 삭제하시겠습니까? [ "+"randName"+" ] 삭제 후 되돌릴 수 없습니다!";
-//        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, randName));
         return dialog;
     }
 
@@ -274,7 +266,7 @@ public class HomeFragment extends Fragment {
             public void onChanged(List<TeamInfo> teamInfo) {
                 homeBinding.tvGroupCount.setText(teamInfo.size() + " 명");
                 teamInfoSize = teamInfo.size();
-                Log.d("countTeam: ",""+teamInfoSize);
+                Log.d("countTeam: ", "" + teamInfoSize);
             }
         });
     }
@@ -284,8 +276,8 @@ public class HomeFragment extends Fragment {
         homeBinding.ibAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    addEditTextItem();
-                    clearEditTextItem();
+                addEditTextItem();
+                clearEditTextItem();
             }
         });
 
@@ -301,7 +293,7 @@ public class HomeFragment extends Fragment {
     private void addEditTextItem() {
         String randomLabel = homeBinding.etRandomLabelHint.getText().toString();
         if (!randomLabel.isEmpty()) {
-           addPenalty(randomLabel);
+            addPenalty(randomLabel);
         } else {
             Toast.makeText(getContext(), "벌칙을 입력해주세요", Toast.LENGTH_SHORT).show();
         }
@@ -313,7 +305,7 @@ public class HomeFragment extends Fragment {
             gameEditPenaltyList.add(newItem);
             adapter.notifyItemInserted(gameEditPenaltyList.size() - 1);
         } else {
-            Toast.makeText(getContext(),"벌칙은 팀원보다 많을 수 없습니다.",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "벌칙은 팀원보다 많을 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -334,17 +326,12 @@ public class HomeFragment extends Fragment {
     }
 
 
-
     private void moveToAddGameActivity() {
-        homeBinding.btnGameStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                homeBinding.etRandomLabelHint.clearFocus();
-
-                setGameName();
-                someMethodWhereYouWantToSendData();
-                sendIntent();
-            }
+        homeBinding.btnGameStart.setOnClickListener(v -> {
+            homeBinding.etRandomLabelHint.clearFocus();
+            setGameName();
+            someMethodWhereYouWantToSendData();
+            sendIntent();
         });
     }
 
