@@ -22,7 +22,6 @@ import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Room;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 
@@ -114,22 +113,12 @@ public class SettingFragment extends Fragment {
         adapter.setOnclick(new SettingAdapter.SettingAdapterClick() {
             @Override
             public void onClickDelete(Group group) {
-                //removeItem(holder.itemView.toString(),pos);
-               // Group group = groupList.get(pos);
                 removeItem(group.getGroupName(),groupList.indexOf(group));
             }
-
-//            @Override
-//            public void onClickInfo(View v, int pos) {
-//                Group group = groupList.get(pos);
-//                dataLoadAll(group.getGroupName());
-//            }
 
 
             @Override
             public void onClickInfo(Group group) {
-                //dataLoadAll(holder.itemView.toString());
-                //Group group = groupList.get(pos);
                 dataLoadAll(group.getGroupName());
             }
         });
@@ -153,17 +142,19 @@ public class SettingFragment extends Fragment {
                             }
 
                             for (String playerName : playerNameList) {
-                                System.out.println("player Name: " + playerName);
+                                Log.d("SettingFragment_playerName: ",playerName);
                             }
 
                             StringBuilder playerStringBuilder = new StringBuilder();
+
                             for (String playerName : playerNameList) {
                                 playerStringBuilder.append("[ "+playerName+" ]").append("\n");
                                 playerCount++;
                             }
                             // 다이얼로그 생성 및 설정
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setTitle(Html.fromHtml("[ " + targetTeamName + " ]     멤버\t<b>[ " + playerCount + " ] 명</b>"))
+                           // builder.setTitle(Html.fromHtml("[ " + targetTeamName + " ]     멤버\t<b>[ " + playerCount + " ] 명</b>"))
+                            builder.setTitle(Html.fromHtml("[ " + targetTeamName + " ]     멤버\t<b>[ " + playerNameList.size() + " ] 명</b>"))
                                     .setIcon(R.drawable.ic_groups)
                                     .setMessage(playerStringBuilder.toString())
                                     .setPositiveButton("확인", (dialog, which) -> dialog.dismiss())
@@ -229,7 +220,7 @@ public class SettingFragment extends Fragment {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_title)
                 .setIcon(R.drawable.ic_delete)
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .create();
 

@@ -2,7 +2,6 @@ package com.zzangse.ghostgame.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -29,7 +28,6 @@ import com.zzangse.ghostgame.databinding.ActivityGameBinding;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Random;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -195,7 +193,7 @@ public class GameActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_title)
                 .setIcon(R.drawable.ic_game)
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(GameActivity.this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override

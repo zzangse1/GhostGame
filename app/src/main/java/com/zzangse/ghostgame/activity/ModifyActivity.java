@@ -24,12 +24,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.zzangse.ghostgame.GameModify;
-import com.zzangse.ghostgame.GameResult;
-import com.zzangse.ghostgame.Group;
 import com.zzangse.ghostgame.R;
 import com.zzangse.ghostgame.TeamInfoViewModel;
-import com.zzangse.ghostgame.adapter.AddAdapter;
-import com.zzangse.ghostgame.adapter.GameResultAdapter;
 import com.zzangse.ghostgame.adapter.ModifyAdapter;
 import com.zzangse.ghostgame.database.RoomDB;
 import com.zzangse.ghostgame.database.TeamInfo;
@@ -142,7 +138,7 @@ public class ModifyActivity extends AppCompatActivity {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_title)
                 .setIcon(R.drawable.ic_delete)
-                .setNegativeButton(R.string.cancel, (dialogInterface, i) ->
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
                     @Override
