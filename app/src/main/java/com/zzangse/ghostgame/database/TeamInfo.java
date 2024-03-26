@@ -10,7 +10,8 @@ public class TeamInfo {
     public TeamInfo() {
     }
 
-    public TeamInfo(String playerName) {
+    public TeamInfo(String teamName, String playerName) {
+        this.teamName = teamName;
         this.playerName = playerName;
     }
 
