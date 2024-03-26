@@ -9,22 +9,27 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.zzangse.ghostgame.Group;
+import com.zzangse.ghostgame.GameAdd;
 import com.zzangse.ghostgame.R;
-import com.zzangse.ghostgame.database.TeamInfo;
 
 import java.util.ArrayList;
 
 
 public class AddAdapter extends RecyclerView.Adapter<AddAdapter.ViewHolder> {
-    private ArrayList<TeamInfo> teamInfoArrayList;
+    //private ArrayList<TeamInfo> teamInfoArrayList;
     private Context context;
+    private ArrayList<GameAdd> playerNameList;
 
-    public AddAdapter(Context context, ArrayList<TeamInfo> teamInfoArrayList) {
+//    public AddAdapter(Context context, ArrayList<TeamInfo> teamInfoArrayList) {
+//        this.context = context;
+//        this.teamInfoArrayList = teamInfoArrayList;
+//    }
+
+
+    public AddAdapter(Context context, ArrayList<GameAdd> playerNameList) {
         this.context = context;
-        this.teamInfoArrayList = teamInfoArrayList;
+        this.playerNameList = playerNameList;
     }
-
 
     @NonNull
     @Override
@@ -35,13 +40,15 @@ public class AddAdapter extends RecyclerView.Adapter<AddAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.tv_playerName.setText(teamInfoArrayList.get(position).getPlayerName());
+       // holder.tv_playerName.setText(teamInfoArrayList.get(position).getPlayerName());
+        holder.tv_playerName.setText(playerNameList.get(position).getPlayerName());
     }
 
 
     @Override
     public int getItemCount() {
-        return teamInfoArrayList.size();
+        //return teamInfoArrayList.size();
+        return playerNameList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
