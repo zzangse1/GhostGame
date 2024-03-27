@@ -2,13 +2,9 @@ package com.zzangse.ghostgame.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spanned;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,14 +64,13 @@ public class SettingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initializeRoomDB();
+        initRoomDB();
         initRecycler();
-        moveToAddActivity(); // 생성 액티비티로 이동
-        moveToModifyActivity(); // 수정 액티비티로 이동
+        intentToAddActivity(); // 생성 액티비티로 이동
+        intentToModifyActivity(); // 수정 액티비티로 이동
         onSwipe();
-        dataLoad(); // 데이터 로드 메소드 호출
+        getRoomDBofTeamName(); // 데이터 로드 메소드 호출
     }
-
 
 
     // rootView를 null로 초기화하여 뷰를 해제
@@ -83,14 +78,14 @@ public class SettingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         settingBinding = null;
-        Log.d("test1234","onDestroyView");
+        Log.d("test1234", "onDestroyView");
     }
 
 
     @Override
     public void onStart() {
         super.onStart();
-        dataLoad();
+        getRoomDBofTeamName();
     }
 
     @Override
@@ -113,59 +108,69 @@ public class SettingFragment extends Fragment {
         adapter.setOnclick(new SettingAdapter.SettingAdapterClick() {
             @Override
             public void onClickDelete(Group group) {
-                removeItem(group.getGroupName(),groupList.indexOf(group));
+                removeItem(group.getGroupName(), groupList.indexOf(group));
             }
 
 
             @Override
             public void onClickInfo(Group group) {
-                dataLoadAll(group.getGroupName());
+                getRoomDBItem(group.getGroupName());
             }
         });
     }
 
     // 팀 이름 가져오기 (중복제거)
     @SuppressLint("CheckResult")
-    public void dataLoadAll(String targetTeamName) {
-        Log.d("dataLoadAll", "targetTeamName: "+targetTeamName);
+    public void getRoomDBItem(String targetTeamName) {
+        Log.d("dataLoadAll", "targetTeamName: " + targetTeamName);
         roomDB.getTeamInfoDao().getAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         // 데이터를 받아와서 업데이트 메소드 호출
                         teamList -> {
-                            playerNameList = new ArrayList<>();
-                            for (TeamInfo team : teamList) {
-                                if (team.getTeamName().equals(targetTeamName)) {
-                                    playerNameList.add(team.getPlayerName());
-                                }
-                            }
-
-                            for (String playerName : playerNameList) {
-                                Log.d("SettingFragment_playerName: ",playerName);
-                            }
-
+                            setTeamInfoToPlayerNameList(targetTeamName, teamList);
                             StringBuilder playerStringBuilder = new StringBuilder();
 
-                            for (String playerName : playerNameList) {
-                                playerStringBuilder.append("[ "+playerName+" ]").append("\n");
-                                playerCount++;
-                            }
+                            setTeamInfoOfPlayerName(playerStringBuilder);
                             // 다이얼로그 생성 및 설정
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                           // builder.setTitle(Html.fromHtml("[ " + targetTeamName + " ]     멤버\t<b>[ " + playerCount + " ] 명</b>"))
-                            builder.setTitle(Html.fromHtml("[ " + targetTeamName + " ]     멤버\t<b>[ " + playerNameList.size() + " ] 명</b>"))
-                                    .setIcon(R.drawable.ic_groups)
-                                    .setMessage(playerStringBuilder.toString())
-                                    .setPositiveButton("확인", (dialog, which) -> dialog.dismiss())
-                                    .show();
-                        },
-                        throwable -> Log.e("dataLoadAll", "Error loading data: " + throwable.getMessage())
+                            AlertDialog dialog = createInfoDialog(targetTeamName, playerStringBuilder);
+                            dialog.show();
+                        }
                 );
         playerCount = 0;
     }
 
-    private void initializeRoomDB() {
+    private void setTeamInfoOfPlayerName(StringBuilder playerStringBuilder) {
+        for (String playerName : playerNameList) {
+            playerStringBuilder.append("[ " + playerName + " ]").append("\n");
+            playerCount++;
+        }
+    }
+
+    private void setTeamInfoToPlayerNameList(String targetTeamName, List<TeamInfo> teamList) {
+        playerNameList = new ArrayList<>();
+        for (TeamInfo team : teamList) {
+            if (team.getTeamName().equals(targetTeamName)) {
+                playerNameList.add(team.getPlayerName());
+            }
+        }
+    }
+
+    private AlertDialog createInfoDialog(String targetTeamName, StringBuilder playerStringBuilder) {
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
+                .setTitle("[ " + targetTeamName + " ] 멤버 [ " + playerCount + " ]  명")
+                .setIcon(R.drawable.ic_groups)
+                .setMessage(playerStringBuilder.toString())
+                .setPositiveButton(R.string.ok_message, (DialogInterface, i) -> {
+                    DialogInterface.dismiss();
+                })
+                .setCancelable(false) // 확인버튼을 눌러야 꺼짐
+                .create();
+        return dialog;
+    }
+
+    private void initRoomDB() {
         roomDB = RoomDB.getInstance(getContext());
     }
 
@@ -173,7 +178,7 @@ public class SettingFragment extends Fragment {
     public void onSwipe() {
         SwipeRefreshLayout swipeRefreshLayout = settingBinding.swip;
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            dataLoad(); // 새로고침 시 데이터 로드
+            getRoomDBofTeamName(); // 새로고침 시 데이터 로드
             Toast.makeText(requireActivity(), "새로고침", Toast.LENGTH_SHORT).show();
             swipeRefreshLayout.setRefreshing(false);
             countTeam();
@@ -183,7 +188,7 @@ public class SettingFragment extends Fragment {
 
     // 팀 이름 가져오기 (중복제거)
     @SuppressLint("CheckResult")
-    public void dataLoad() {
+    public void getRoomDBofTeamName() {
         roomDB.getTeamInfoDao().showTeam_Team()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -197,45 +202,45 @@ public class SettingFragment extends Fragment {
     private void updateData(List<TeamInfo> teamInfoList) {
         groupList.clear();
         for (TeamInfo teamInfo : teamInfoList) {
-            TeamInfoListAdd(teamInfo);
+            setTeamInfoToGroup(teamInfo);
         }
         adapter.notifyDataSetChanged(); // 데이터 변경 시 어댑터에 알려줌
         countTeam();
     }
 
     // group에 teamName을 넣어줌
-    private void TeamInfoListAdd(TeamInfo teamInfo) {
+    private void setTeamInfoToGroup(TeamInfo teamInfo) {
         Group group = new Group();
-        //Log.e("TeamInfoListAdd", teamInfo.getTeamName() + ".." + teamInfo.getPlayerName());
-        Log.d("SettingFragment_TeamInfoListAdd", teamInfo.getTeamName() + ".." + teamInfo.getPlayerName());
         group.setGroupName(teamInfo.getTeamName());
         groupList.add(group);
     }
 
     public void removeItem(String teamName, int pos) {
-        createDialog(teamName, pos).show();
+        AlertDialog dialog = createInfoDialog(teamName, pos);
+        dialog.show();
     }
 
-    private AlertDialog createDialog(String teamName, int pos) {
+    private AlertDialog createInfoDialog(String teamName, int pos) {
+        String deleteMsg = "을 삭제하시겠습니까?<br/><font color ='#ff0000'>" +
+                " 삭제 후 되돌릴 수 없습니다!</font color>";
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_title)
+                .setMessage(HtmlCompat.fromHtml("그룹 [ " + teamName + " ] " + deleteMsg, HtmlCompat.FROM_HTML_MODE_LEGACY))
                 .setIcon(R.drawable.ic_delete)
                 .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
+                        // 취소 버튼 로직
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
+                .setPositiveButton(R.string.ok_message, (DialogInterface, i) -> {
+                    onClickDelete(teamName, pos);
+                    Toast.makeText(getContext(), "그룹 [ " + teamName + " ] 이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                })
                 .create();
-
-        String deleteGroupMsg = getContext().getString(R.string.delete_group_message);
-        dialog.setMessage(getHtmlFormattedText(deleteGroupMsg, teamName));
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, "삭제", (dialogInterface, i) -> {
-            clickDelete(teamName, pos);
-            Toast.makeText(getContext(), "그룹 [ " + teamName + " ] 이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-        });
         return dialog;
     }
 
 
     @SuppressLint("CheckResult")
-    private void clickDelete(String teamName, int pos) {
+    private void onClickDelete(String teamName, int pos) {
         roomDB.getTeamInfoDao().deleteItem(teamName)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -243,21 +248,10 @@ public class SettingFragment extends Fragment {
                         () -> {
                             groupList.removeIf(group -> group.getGroupName().equals(teamName));
                             adapter.notifyItemRemoved(pos);
-                            settingBinding.tvGroupCountFragmentSetting.setText("그룹: "+groupList.size()+" 팀");
+                            settingBinding.tvGroupCountFragmentSetting.setText("그룹: " + groupList.size() + " 팀");
                         },
                         throwable -> Log.e("SettingAdapter", "Error deleting item: " + throwable.getMessage())
                 );
-    }
-
-    private Spanned getHtmlFormattedText(String messageTemplate, String teamName) {
-        String formattedMessage = String.format(messageTemplate, teamName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return HtmlCompat.fromHtml(formattedMessage, HtmlCompat.FROM_HTML_MODE_COMPACT);
-        } else {
-            @SuppressWarnings("deprecation")
-            Spanned spanned = Html.fromHtml(formattedMessage);
-            return spanned;
-        }
     }
 
     @Override
@@ -289,18 +283,19 @@ public class SettingFragment extends Fragment {
     }
 
 
-    private void moveToAddActivity() {
+    private void intentToAddActivity() {
         settingBinding.fragmentSettingBtnAdd.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), AddActivity.class);
             startActivity(intent);
         });
     }
 
-    private void moveToModifyActivity() {
+    private void intentToModifyActivity() {
         settingBinding.fragmentSettingBtnModify.setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), ModifyActivity.class);
             startActivity(intent);
         });
     }
+
 
 }
