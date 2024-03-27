@@ -151,7 +151,7 @@ public class AddActivity extends AppCompatActivity {
                     // 오류 발생 시 처리하는 작업
                     throwable.printStackTrace();
                 });
-
+// 질문
 //        for (TeamInfo teamInfo : teamInfoArrayList) {
 //            Log.d("teamInfo: ", teamInfo.getTeamName() + ", " + teamInfo.getPlayerName());
 //            roomDB.getTeamInfoDao().insert(teamInfo)
