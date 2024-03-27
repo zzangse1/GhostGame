@@ -91,11 +91,12 @@ public class ModifyActivity extends AppCompatActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        ()->{
+                        () -> {
                             deleteItem(pos);
                         }
                 );
     }
+
     private void initRoomDB() {
         roomDB = RoomDB.getInstance(this.getApplicationContext());
     }
@@ -146,7 +147,7 @@ public class ModifyActivity extends AppCompatActivity {
                         Log.d("createDialog", playerName);
                         Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                         //deleteItem(pos);
-                        deleteRoom(mGroupName,mPlayerName,pos);
+                        deleteRoom(mGroupName, mPlayerName, pos);
                     }
                 })
                 .create();
@@ -182,7 +183,7 @@ public class ModifyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newPlayerName = modifyBinding.etInput.getText().toString();
-                if (!newPlayerName.isEmpty()) {
+                if (!newPlayerName.isEmpty() && isPlayerNameUniqueCheck(newPlayerName)) {
                     saveTeamInfo(newPlayerName);
                     modifyBinding.etInput.getText().clear();
                 } else {
@@ -193,12 +194,23 @@ public class ModifyActivity extends AppCompatActivity {
         });
     }
 
+    // 새로운 멤버 추가 중복 체크
+    private boolean isPlayerNameUniqueCheck(String newPlayerName) {
+        for (String str : mPlayerNameList) {
+            if (newPlayerName.equals(str)) {
+                Toast.makeText(ModifyActivity.this, "[ " + newPlayerName + " ] 멤버가 이미 존재합니다", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        return true;
+    }
 
     @SuppressLint("CheckResult")
     private void saveTeamInfo(String playerName) {
         if (teamInfo == null) {
             teamInfo = new TeamInfo();
         }
+
         teamInfo.setTeamName(mGroupName);
         teamInfo.setPlayerName(playerName);
 
@@ -210,11 +222,6 @@ public class ModifyActivity extends AppCompatActivity {
     }
 
     private void addPlayerToRecyclerView() {
-        // 삭제했음
-       // RecyclerView recyclerView = modifyBinding.rvModify;
-       // recyclerView = modifyBinding.rvModify;
-       // recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //adapter = new ModifyAdapter(this, gameModifyArrayList);
         for (int i = 0; i < mPlayerNameList.size(); i++) {
             GameModify newItem = new GameModify(mPlayerNameList.get(i));
             gameModifyArrayList.add(newItem);
@@ -222,8 +229,6 @@ public class ModifyActivity extends AppCompatActivity {
         }
         // 어댑터 새로고침 (리싸이클러뷰의 아이템과 크기가 전부 변경되기때문)
         adapter.notifyDataSetChanged();
-       // adapter.notifyItemInserted(gameModifyArrayList.size() - 1);
-       // recyclerView.setAdapter(adapter);
     }
 
     private void setSpinnerEvents() {
