@@ -177,7 +177,7 @@ public class AddActivity extends AppCompatActivity {
     private void onClickBtnAdd() {
         binding.activityAddBtnAdd.setOnClickListener(v -> {
             mTeamName = binding.etGroupInput.getText().toString();
-            String playerName = binding.etInput.getText().toString();
+            String playerName = binding.etPlayerInput.getText().toString();
             if (isInputValid(playerName))
                 if (isPlayerNameUniqueCheck(playerName) && isTeamNameUniqueCheck()) {
                     setRecyclerItem(playerName);
@@ -235,6 +235,7 @@ public class AddActivity extends AppCompatActivity {
     private boolean isInputValid(String playerName) {
         if (TextUtils.isEmpty(binding.etGroupInput.getText()) || TextUtils.isEmpty(playerName)) {
             Toast.makeText(AddActivity.this, EMPTY_INPUT_MESSAGE, Toast.LENGTH_SHORT).show();
+            binding.etGroupInput.requestFocus();
             return false;
         }
         clearEditText();
@@ -243,7 +244,7 @@ public class AddActivity extends AppCompatActivity {
 
     //
     private void clearEditText() {
-        binding.etInput.getText().clear();
+        binding.etPlayerInput.getText().clear();
         binding.etGroupInput.setEnabled(false);
     }
 
