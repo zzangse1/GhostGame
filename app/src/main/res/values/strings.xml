@@ -16,8 +16,6 @@
 
 
     <string name="activity_add_btn_add_label">추가</string>
-    <string name="activity_add_et_player_hint_label">멤버 이름</string>
-    <string name="activity_add_et_group_hint_label">그룹 이름</string>
     <string name="activity_add_toolbar">그룹 생성</string>
     <string name="activity_modify_toolbar">그룹 수정</string>
 
@@ -35,6 +33,10 @@
     <string name="activity_game_btn_result_ok">확 인</string>
     <string name="activity_game_tv_game_name_label">게임:</string>
     <string name="activity_add_btn_label_save">저장</string>
+    <string name="activity_add_group_input_label">그룹</string>
+    <string name="player_input_label">멤버</string>
+    <string name="fragment_home_et_game_title_hint">게임 제목</string>
+    <string name="fragment_homt_et_random_hint">벌칙</string>
 
 
 </resources>

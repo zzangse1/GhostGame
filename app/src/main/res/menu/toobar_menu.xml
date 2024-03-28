@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/toolbar_back"
-        android:icon="@drawable/ic_back"
-        android:title=""/>
+        android:id="@+id/toolbar_help"
+        android:contentDescription="hint"
+        android:icon="@drawable/ic_help"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
 </menu>

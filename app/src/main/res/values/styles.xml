@@ -9,8 +9,8 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="AppEditText.S30">
-        <item name="android:textSize">30sp</item>
+    <style name="AppEditText.S40">
+        <item name="android:textSize">40sp</item>
     </style>
 
 </resources>
