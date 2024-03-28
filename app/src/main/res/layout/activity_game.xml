@@ -18,7 +18,7 @@
 
     <TextView
         android:id="@+id/tv_gameNameLabel"
-        style="@style/AppEditText.S30"
+        style="@style/AppEditText.S40"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/tv_gameName"
-        style="@style/AppEditText.S30"
+        style="@style/AppEditText.S40"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -42,16 +42,7 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
 
 
-    <TextView
-        android:id="@+id/tv_gameResultLabel"
-        style="@style/AppEditText.S30"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="결 과"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_gameName" />
+
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -62,7 +53,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_gameResultLabel" />
+        app:layout_constraintTop_toBottomOf="@id/tv_gameName" />
 
     <Button
         android:id="@+id/btn_result"

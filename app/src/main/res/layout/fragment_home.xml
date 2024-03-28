@@ -13,11 +13,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:menu="@menu/bottom_nav_menu"
+        app:menu="@menu/toobar_menu"
         app:title="홈" />
 
     <ImageButton
-        android:visibility="gone"
         android:id="@+id/ib_tooltip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,33 +24,28 @@
         android:backgroundTint="@color/white"
         android:padding="10dp"
         android:src="@drawable/ic_info"
-        app:layout_constraintBottom_toTopOf="@id/et_gameName"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/et_gameName_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/et_gameName"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="10dp"
-        android:background="@drawable/et_box"
-        android:gravity="center"
-        android:hint="@string/fragment_home_et_gameName_hint"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_game_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tv_game_name"
-        app:layout_constraintTop_toTopOf="@id/tv_game_name" />
 
-    <TextView
-        android:id="@+id/tv_game_name"
-        style="@style/AppEditText.S20"
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:layout_height="50dp"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_gameName_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:text="게임 이름: "
+        android:layout_marginEnd="10dp"
+        android:hint="@string/fragment_home_et_game_title_hint"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_gameName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/tv_group_label"
@@ -63,7 +57,7 @@
         android:paddingEnd="10dp"
         android:text="@string/fragment_home_tv_group_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_game_name" />
+        app:layout_constraintTop_toBottomOf="@id/et_gameName_layout" />
 
     <com.toptoche.searchablespinnerlibrary.SearchableSpinner
         android:id="@+id/spinner_home"
@@ -86,7 +80,7 @@
         android:text="0 명"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/spinner_home"
-        app:layout_constraintTop_toBottomOf="@id/tv_game_name" />
+        app:layout_constraintTop_toBottomOf="@id/et_gameName_layout" />
 
     <Button
         android:id="@+id/btn_gameStart"
@@ -99,32 +93,23 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <TextView
-        android:id="@+id/tv_random_label"
-        style="@style/AppEditText.S20"
-        android:layout_width="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/et_random_label_hint_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:text="벌칙 정하기 "
+        android:layout_marginEnd="10dp"
+        android:hint="@string/fragment_homt_et_random_hint"
+        app:layout_constraintEnd_toStartOf="@id/ib_add"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_group_label" />
+        app:layout_constraintTop_toBottomOf="@id/spinner_home">
 
-    <EditText
-        android:id="@+id/et_random_label_hint"
-        style="@style/AppEditText"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
-        android:background="@drawable/et_box"
-        android:gravity="center"
-        android:hint="벌칙만 작성해주세요"
-        android:textColor="@color/gray"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_random_label"
-        app:layout_constraintEnd_toStartOf="@+id/ib_add"
-        app:layout_constraintStart_toEndOf="@id/tv_random_label"
-        app:layout_constraintTop_toTopOf="@id/tv_random_label" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_random_label_hint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <ImageButton
         android:id="@+id/ib_add"
@@ -133,10 +118,10 @@
         android:layout_marginEnd="10dp"
         android:backgroundTint="@color/white"
         android:src="@drawable/ic_add"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_random_label"
+        app:layout_constraintBottom_toBottomOf="@+id/et_random_label_hint_layout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tv_random_label" />
-
+        app:layout_constraintTop_toTopOf="@+id/et_random_label_hint_layout"
+        app:layout_constraintVertical_bias="0.5" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -150,7 +135,7 @@
         app:layout_constraintBottom_toTopOf="@id/btn_gameStart"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_random_label"
+        app:layout_constraintTop_toBottomOf="@id/et_random_label_hint_layout"
         tools:listitem="@layout/rv_tv_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
