@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 import com.zzangse.ghostgame.GameModify;
 import com.zzangse.ghostgame.R;
 import com.zzangse.ghostgame.TeamInfoViewModel;
@@ -136,37 +137,23 @@ public class ModifyActivity extends AppCompatActivity {
 
 
     public AlertDialog createDialog(String playerName, int pos) {
+        String deleteEditMsg = "해당 멤버 [ " + playerName + " ] 을 삭제하시겠습니까? " +
+                "<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_title)
+                .setMessage(HtmlCompat.fromHtml(deleteEditMsg, HtmlCompat.FROM_HTML_MODE_LEGACY))
                 .setIcon(R.drawable.ic_delete)
                 .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d("createDialog", playerName);
-                        Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-                        //deleteItem(pos);
-                        deleteRoom(mGroupName, mPlayerName, pos);
-                    }
+                .setPositiveButton("삭제", (DialogInterface, i) -> {
+                    Log.d("createDialog", playerName);
+                    Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                    deleteRoom(mGroupName, mPlayerName, pos);
                 })
                 .create();
-
-        String deleteEditMsg = "해당 멤버을 삭제하시겠습니까? [ " + playerName + " ] 삭제 후 되돌릴 수 없습니다!";
-        dialog.setMessage(getHtmlFormattedText(deleteEditMsg, playerName));
         return dialog;
     }
 
-    private Spanned getHtmlFormattedText(String messageTemplate, String teamName) {
-        String formattedMessage = String.format(messageTemplate, teamName);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return HtmlCompat.fromHtml(formattedMessage, HtmlCompat.FROM_HTML_MODE_COMPACT);
-        } else {
-            @SuppressWarnings("deprecation")
-            Spanned spanned = Html.fromHtml(formattedMessage);
-            return spanned;
-        }
-    }
 
     private void setupToolbarBackButton() {
         modifyBinding.toolbarModify.setNavigationOnClickListener(v -> finish());
@@ -182,10 +169,10 @@ public class ModifyActivity extends AppCompatActivity {
         modifyBinding.activityModifyBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newPlayerName = modifyBinding.etInput.getText().toString();
+                String newPlayerName = modifyBinding.etPlayerInput.getText().toString();
                 if (!newPlayerName.isEmpty() && isPlayerNameUniqueCheck(newPlayerName)) {
                     saveTeamInfo(newPlayerName);
-                    modifyBinding.etInput.getText().clear();
+                    modifyBinding.etPlayerInput.getText().clear();
                 } else {
                     Toast.makeText(getApplicationContext(), "멤버 이름을 작성해주세요", Toast.LENGTH_SHORT).show();
                 }
@@ -311,6 +298,8 @@ public class ModifyActivity extends AppCompatActivity {
     private void initSpinner() {
         modifyBinding.spinnerModify.setTitle("그룹을 선택해주세요");
         modifyBinding.spinnerModify.setPositiveButton("취소");
+
+
         teamInfoViewModel.getShowTeam().observe(this, new Observer<List<TeamInfo>>() {
             @Override
             public void onChanged(List<TeamInfo> teamInfoList) {
