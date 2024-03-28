@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
@@ -72,16 +74,35 @@ public class HomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeRoomDB();
-        initSpinner();
-        setSpinnerEvents();
+        showSpinner();
+        onClickSpinner();
         initRecycler();
         setBtnClickEvent();
         moveToAddGameActivity();
         initTooltip();
         showTooltip();
         test();
+        onClickHelp();
     }
 
+    private void onClickHelp() {
+        homeBinding.toolbarHome.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        homeBinding.toolbarHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.toolbar_help) {
+                    Toast.makeText(getContext(),"asdf",Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
+    }
 
     private void initTooltip() {
         balloon = new Balloon.Builder(requireContext())
@@ -129,7 +150,7 @@ public class HomeFragment extends Fragment {
         Log.d("setGameName", "mGameName: " + mGameName);
     }
 
-    private void initSpinner() {
+    private void showSpinner() {
         homeBinding.spinnerHome.setTitle("그룹을 선택해주세요");
         homeBinding.spinnerHome.setPositiveButton("취소");
         teamInfoViewModel.getShowTeam().observe(getViewLifecycleOwner(), new Observer<List<TeamInfo>>() {
@@ -142,7 +163,7 @@ public class HomeFragment extends Fragment {
                     teamNameList.add(teamName);
                 }
                 // spinner에 값 삽입
-                updateSpinner(teamNameList);
+                initSpinner(teamNameList);
             }
         });
     }
@@ -176,7 +197,7 @@ public class HomeFragment extends Fragment {
 
     // 삭제 버튼 클릭시 다이얼로그 창 띄움
     public AlertDialog createDialog(String randName, int pos) {
-        String deleteEditMsg = "해당 벌칙 [ " + randName + " ]을 삭제하시겠습니까?" +
+        String deleteEditMsg = "해당 벌칙 [ " + randName + " ] 을 삭제하시겠습니까?" +
                 "<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
         AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setTitle(R.string.dialog_title)
@@ -235,14 +256,14 @@ public class HomeFragment extends Fragment {
         balloon.showAlignStart(homeBinding.ibTooltip);
     }
 
-    private void updateSpinner(ArrayList<String> teamNameList) {
+    private void initSpinner(ArrayList<String> teamNameList) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, teamNameList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         homeBinding.spinnerHome.setAdapter(adapter);
     }
 
     // 스피너에서 아이템 선택했을 때 이벤트 처리
-    private void setSpinnerEvents() {
+    private void onClickSpinner() {
         homeBinding.spinnerHome.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
