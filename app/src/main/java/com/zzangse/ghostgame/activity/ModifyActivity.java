@@ -194,6 +194,7 @@ public class ModifyActivity extends AppCompatActivity {
     private boolean isPlayerNameUniqueCheck(String newPlayerName) {
         for (String str : mPlayerNameList) {
             if (newPlayerName.equals(str)) {
+                modifyBinding.etPlayerInput.getText().clear();
                 Toast.makeText(ModifyActivity.this, "[ " + newPlayerName + " ] 멤버가 이미 존재합니다", Toast.LENGTH_SHORT).show();
                 return false;
             }
