@@ -46,7 +46,6 @@ public class GameActivity extends AppCompatActivity {
     private GameResultAdapter adapter;
     private int mGamePenaltySize;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,12 +58,13 @@ public class GameActivity extends AppCompatActivity {
         initIntent();
         setGameName();
         setupToolbarBackButton();
-        getPlayer(mGroupName);
+       // getPlayer(mGroupName);
         setButtonClickListeners();
+        test();
     }
 
     private void setupToolbarBackButton() {
-        binding.toolbarHome.setNavigationOnClickListener(v->finish());
+        binding.toolbarHome.setNavigationOnClickListener(v -> finish());
     }
 
     private void initIntent() {
@@ -88,11 +88,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void addPlayerToRecyclerView() {
-//        RecyclerView recyclerView = binding.rvGameResult;
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        adapter = new GameResultAdapter(this, gameResultArrayList);
         recyclerView.setAdapter(adapter);
-        for (int i = 0; i < mGamePenaltySize; i++) {
+        for (int i = 0; i < mPlayerNameList.size(); i++) {
             GameResult newItem = new GameResult(mPlayerNameList.get(i), mGamePenaltyList.get(i));
             gameResultArrayList.add(newItem);
         }
@@ -102,7 +99,6 @@ public class GameActivity extends AppCompatActivity {
     private void setGameName() {
         binding.tvGameName.setText(mGameName);
     }
-
 
     private void initView() {
         binding = ActivityGameBinding.inflate(getLayoutInflater());
@@ -202,7 +198,7 @@ public class GameActivity extends AppCompatActivity {
                         binding.btnResult.setVisibility(View.VISIBLE);
                         clearRecycler();
                         binding.btnResult.setText("다시하기");
-                        Toast.makeText(GameActivity.this,"결과를 초기화 합니다",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(GameActivity.this, "결과를 초기화 합니다", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .create();
@@ -212,7 +208,10 @@ public class GameActivity extends AppCompatActivity {
         return dialog;
     }
 
-
+/*    질문 mPlayerNameList가 0인 이유
+    private void test2() {
+        Log.d("check",mPlayerNameList.size()+"");
+    }
     @SuppressLint("CheckResult")
     private void getPlayer(String targetTeamName) {
         roomDB.getTeamInfoDao().getAll()
@@ -220,19 +219,51 @@ public class GameActivity extends AppCompatActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         playerList -> {
-                            //playerNameList = new ArrayList<>();
                             for (TeamInfo team : playerList) {
                                 if (team.getTeamName().equals(targetTeamName)) {
                                     mPlayerNameList.add(team.getPlayerName());
                                 }
                             }
-                            for (String playerName : mPlayerNameList) {
-                                Log.d("GameActivity_getPlayer: ",playerName);
-                                // System.out.println("playerName: " + playerName);
-                                // binding.tvGameResult.append(playerName + "\n");
-                            }
                         }
                 );
+
+    }*/
+
+    private void test() {
+        getPlayer(mGroupName,()->{
+            Log.d("check: ",mPlayerNameList.size()+"");
+            String nullStr = "통과";
+            for (int i = 0; i < mPlayerNameList.size()-mGamePenaltySize; i++){
+                mGamePenaltyList.add(nullStr);
+            }
+            for (String a : mGamePenaltyList) {
+                Log.d("penalty: ",a);
+            }
+            for (String a : mPlayerNameList) {
+                Log.d("palyer: ",a);
+            }
+        });
     }
+
+
+
+    @SuppressLint("CheckResult")
+    private void getPlayer(String targetTeamName, Runnable onComplete) {
+        roomDB.getTeamInfoDao().getAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        playerList -> {
+                            for (TeamInfo team : playerList) {
+                                if (team.getTeamName().equals(targetTeamName)) {
+                                    mPlayerNameList.add(team.getPlayerName());
+                                }
+                            }
+                            onComplete.run();
+                        }
+                );
+
+    }
+
 
 }
