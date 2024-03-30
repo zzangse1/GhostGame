@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -145,12 +147,19 @@ public class ModifyActivity extends AppCompatActivity {
                 .setIcon(R.drawable.ic_delete)
                 .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton("삭제", (DialogInterface, i) -> {
+                .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
                     Log.d("createDialog", playerName);
                     Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
                     deleteRoom(mGroupName, mPlayerName, pos);
                 })
                 .create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setTextColor(Color.RED);
+            negativeButton.setTextColor(Color.BLACK);
+        });
+
         return dialog;
     }
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -25,13 +26,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.skydoves.balloon.ArrowOrientation;
-import com.skydoves.balloon.Balloon;
-import com.skydoves.balloon.BalloonAnimation;
 import com.zzangse.ghostgame.GameEditPenalty;
 import com.zzangse.ghostgame.R;
 import com.zzangse.ghostgame.TeamInfoViewModel;
 import com.zzangse.ghostgame.activity.GameActivity;
+import com.zzangse.ghostgame.activity.HelpActivity;
 import com.zzangse.ghostgame.adapter.EditAdapter;
 import com.zzangse.ghostgame.database.RoomDB;
 import com.zzangse.ghostgame.database.TeamInfo;
@@ -52,7 +51,6 @@ public class HomeFragment extends Fragment {
     private ArrayList<GameEditPenalty> gameEditPenaltyList = new ArrayList<>();
     private String mGroupName;
     private String mGameName;
-    private Balloon balloon;
     private int teamInfoSize = 0;
 
     @Override
@@ -66,7 +64,6 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         homeBinding = FragmentHomeBinding.inflate(inflater);
-
         return homeBinding.getRoot();
     }
 
@@ -79,49 +76,35 @@ public class HomeFragment extends Fragment {
         initRecycler();
         setBtnClickEvent();
         moveToAddGameActivity();
-        initTooltip();
-        showTooltip();
-        test();
         onClickHelp();
+
     }
 
-    private void onClickHelp() {
-        homeBinding.toolbarHome.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
+    private void onClickHelp() {
+//        homeBinding.toolbarHome.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
         homeBinding.toolbarHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if (item.getItemId() == R.id.toolbar_help) {
-                    Toast.makeText(getContext(),"asdf",Toast.LENGTH_SHORT).show();
+                    moveToHelpActivity();
                 }
                 return false;
             }
         });
     }
 
-    private void initTooltip() {
-        balloon = new Balloon.Builder(requireContext())
-                .setArrowSize(10)
-                //.setIconDrawable(ContextCompat.getDrawable(this, R.drawable.ic_info))
-                .setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
-                .setArrowOrientation(ArrowOrientation.END)
-                .setArrowPosition(0.3f)
-                //.setArrowVisible(true)
-                .setWidthRatio(0.3f) // 말풍선 넓이
-                .setHeight(50)
-                .setTextSize(14f)
-                .setCornerRadius(4f)
-                .setAlpha(0.9f)
-                .setText("사용 설명서")
-                .setBalloonAnimation(BalloonAnimation.FADE)
-                .build();
-
+    private void moveToHelpActivity() {
+        Intent intent = new Intent(requireActivity(), HelpActivity.class);
+        startActivity(intent);
     }
+
 
     private void initializeRoomDB() {
         roomDB = RoomDB.getInstance(getContext());
@@ -205,24 +188,21 @@ public class HomeFragment extends Fragment {
                 .setIcon(R.drawable.ic_delete)
                 .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton("삭제", (DialogInterface, i) -> {
+                .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
                     Log.d("createDialog", randName);
                     Toast.makeText(getContext(), "벌칙 [ " + randName + " ] 이/가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     deleteItem(pos);
                 })
                 .create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setTextColor(Color.RED);
+            negativeButton.setTextColor(Color.BLACK);
+        });
         return dialog;
     }
 
-    private void test() {
-        homeBinding.ibTooltip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog dialog = createDialog();
-                dialog.show();
-            }
-        });
-    }
 
     // 설명
     public AlertDialog createDialog() {
@@ -252,9 +232,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void showTooltip() {
-        balloon.showAlignStart(homeBinding.ibTooltip);
-    }
 
     private void initSpinner(ArrayList<String> teamNameList) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, teamNameList);

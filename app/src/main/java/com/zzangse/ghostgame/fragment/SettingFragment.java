@@ -2,13 +2,16 @@ package com.zzangse.ghostgame.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -230,11 +233,18 @@ public class SettingFragment extends Fragment {
                 .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
                         // 취소 버튼 로직
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton(R.string.ok_message, (DialogInterface, i) -> {
+                .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
                     onClickDelete(teamName, pos);
                     Toast.makeText(getContext(), "그룹 [ " + teamName + " ] 이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 })
                 .create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setTextColor(Color.RED);
+            negativeButton.setTextColor(Color.BLACK);
+        });
         return dialog;
     }
 
