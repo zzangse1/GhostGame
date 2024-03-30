@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="5dp"
         app:cardElevation="3dp"
+        app:strokeColor="@color/mint"
         app:cardUseCompatPadding="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

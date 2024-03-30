@@ -22,10 +22,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/activity_game_tv_game_name_label"
         app:layout_constraintEnd_toStartOf="@id/tv_gameName"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_gameName" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
 
     <TextView
         android:id="@+id/tv_gameName"
@@ -33,27 +34,62 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:background="@drawable/tv_box"
         android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="@id/tv_gameNameLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_gameNameLabel"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_home" />
+        app:layout_constraintTop_toTopOf="@id/tv_gameNameLabel" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tv_game_result_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:gravity="center"
+        app:layout_constraintBottom_toTopOf="@id/rv_game_result"
+        app:layout_constraintTop_toBottomOf="@id/tv_gameName">
 
+        <TextView
+            android:id="@+id/tv_1"
+            style="@style/AppEditText.S20"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="이름"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_2"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_2"
+            style="@style/AppEditText.S20"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="벌칙"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_1"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_game_result"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         app:layout_constraintBottom_toTopOf="@id/btn_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_gameName" />
+        app:layout_constraintTop_toBottomOf="@id/tv_game_result_label" />
 
     <Button
         android:id="@+id/btn_result"

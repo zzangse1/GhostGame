@@ -16,19 +16,6 @@
         app:menu="@menu/toobar_menu"
         app:title="홈" />
 
-    <ImageButton
-        android:id="@+id/ib_tooltip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="5dp"
-        android:backgroundTint="@color/white"
-        android:padding="10dp"
-        android:src="@drawable/ic_info"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/et_gameName_layout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/et_gameName_layout"
