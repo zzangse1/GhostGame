@@ -58,9 +58,8 @@ public class GameActivity extends AppCompatActivity {
         initIntent();
         setGameName();
         setupToolbarBackButton();
-       // getPlayer(mGroupName);
         setButtonClickListeners();
-        test();
+        setPlayerNameList();
     }
 
     private void setupToolbarBackButton() {
@@ -208,28 +207,8 @@ public class GameActivity extends AppCompatActivity {
         return dialog;
     }
 
-/*    질문 mPlayerNameList가 0인 이유
-    private void test2() {
-        Log.d("check",mPlayerNameList.size()+"");
-    }
-    @SuppressLint("CheckResult")
-    private void getPlayer(String targetTeamName) {
-        roomDB.getTeamInfoDao().getAll()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        playerList -> {
-                            for (TeamInfo team : playerList) {
-                                if (team.getTeamName().equals(targetTeamName)) {
-                                    mPlayerNameList.add(team.getPlayerName());
-                                }
-                            }
-                        }
-                );
 
-    }*/
-
-    private void test() {
+    private void setPlayerNameList() {
         getPlayer(mGroupName,()->{
             Log.d("check: ",mPlayerNameList.size()+"");
             String nullStr = "통과";
@@ -244,8 +223,6 @@ public class GameActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     @SuppressLint("CheckResult")
     private void getPlayer(String targetTeamName, Runnable onComplete) {
