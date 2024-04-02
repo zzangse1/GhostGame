@@ -55,17 +55,6 @@ public class ModifyActivity extends AppCompatActivity {
     private int teamInfoSize = 0;
     private int nowSpinnerPos = 0;
 
-    /*
-     * 스피너 가져오기
-     * 스피너가 가리키고있는 팀 이름 가져오기
-     * 팀이름을 기반으로 기존에 있던 playerName을 ArrayList에 넣기
-     * ArrayList와 어댑터 연결해서 기존의 이름 리싸이클러뷰에 보이기
-     * 추가 / 삭제 구현
-     * 멤버이름 중복 불가능
-     * 그룹 중복 생성 금지
-     * 팀생성 추가를 누르면 팀이름 못 바꾸게
-     * */
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
