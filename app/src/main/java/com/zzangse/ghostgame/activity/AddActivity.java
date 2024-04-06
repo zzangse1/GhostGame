@@ -1,17 +1,20 @@
 package com.zzangse.ghostgame.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.OnBackPressedDispatcher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 import androidx.lifecycle.Observer;
@@ -28,7 +31,6 @@ import com.zzangse.ghostgame.database.TeamInfo;
 import com.zzangse.ghostgame.databinding.ActivityAddBinding;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -80,6 +82,22 @@ public class AddActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new AddAdapter(this, playerNameList);
         recyclerView.setAdapter(adapter);
+
+        adapter.setOnClick(new AddAdapter.AddAdpaterClick() {
+            @Override
+            public void onClickDelete(GameAdd gameAdd) {
+                AlertDialog dialog = createDialog(gameAdd.getPlayerName(), playerNameList.indexOf(gameAdd));
+                dialog.show();
+            }
+        });
+    }
+
+    private void deleteItem(int pos) {
+        if (pos != RecyclerView.NO_POSITION) {
+            playerNameList.remove(pos);
+            setItemCount();
+            adapter.notifyItemRemoved(pos);
+        }
     }
 
     private void initViewModel() {
@@ -102,13 +120,38 @@ public class AddActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    private AlertDialog createDialog(String playerName, int pos) {
+        String deleteEditMsg = "해당 멤버 [ " + playerName + " ] 을 삭제하시겠습니까?" +
+                "<br/><font color='#ff0000'>삭제 후 되돌릴 수 없습니다!</font color>";
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_title)
+                .setMessage(HtmlCompat.fromHtml(deleteEditMsg, HtmlCompat.FROM_HTML_MODE_LEGACY))
+                .setIcon(R.drawable.ic_delete)
+                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
+                        Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
+                .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
+                    Log.d("createDialog", playerName);
+                    Toast.makeText(this, "멤버 [ " + playerName + " ] 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    deleteItem(pos);
+                })
+                .setCancelable(false)
+                .create();
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setTextColor(Color.RED);
+            negativeButton.setTextColor(Color.BLACK);
+        });
+        return dialog;
+    }
+
     private AlertDialog createDialog() {
         String mainMsg = "저장을 누르지 않고 뒤로 돌아가면<br/><font color ='#ff0000'>" +
                 " 저장되지 않습니다!</font color>";
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("정보")
+                .setTitle("안내")
                 .setMessage(HtmlCompat.fromHtml(mainMsg, HtmlCompat.FROM_HTML_MODE_LEGACY))
-                .setIcon(R.drawable.ic_groups)
+                .setIcon(R.drawable.ic_info)
                 .setNegativeButton(R.string.cancel_message, (DialogInterface, i) ->
                         //취소 로직
                         Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
@@ -117,7 +160,15 @@ public class AddActivity extends AppCompatActivity {
                     //확인 로직
                     finish();
                 })
+                .setCancelable(false)
                 .create();
+
+        dialog.setOnShowListener(dialogInterface -> {
+            Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+            Button negativeButton = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+            positiveButton.setTextColor(Color.RED);
+            negativeButton.setTextColor(Color.BLACK);
+        });
         return dialog;
     }
 
@@ -151,15 +202,6 @@ public class AddActivity extends AppCompatActivity {
                     // 오류 발생 시 처리하는 작업
                     throwable.printStackTrace();
                 });
-// 질문
-//        for (TeamInfo teamInfo : teamInfoArrayList) {
-//            Log.d("teamInfo: ", teamInfo.getTeamName() + ", " + teamInfo.getPlayerName());
-//            roomDB.getTeamInfoDao().insert(teamInfo)
-//                    .subscribeOn(Schedulers.io())
-//                    .observeOn(AndroidSchedulers.mainThread())
-//                    .subscribe();
-//        }
-        //     Toast.makeText(this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     // playerNameList를 teamInfo에 넣어주는 로직
@@ -226,9 +268,13 @@ public class AddActivity extends AppCompatActivity {
 
     private void setRecyclerItem(String playerName) {
         playerNameList.add(new GameAdd(playerName));
+        setItemCount();
+        adapter.notifyItemInserted(playerNameList.size() - 1);
+    }
+
+    private void setItemCount() {
         int playerCount = playerNameList.size();
         binding.toolbarAdd.setTitle(playerCount + " 명");
-        adapter.notifyItemInserted(playerNameList.size() - 1);
     }
 
     // editText에 값이 유요한지 확인하는 로직
