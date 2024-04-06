@@ -81,7 +81,6 @@ public class SettingFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         settingBinding = null;
-        Log.d("test1234", "onDestroyView");
     }
 
 
@@ -108,7 +107,7 @@ public class SettingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         // adapter 기능 구현
-        adapter.setOnclick(new SettingAdapter.SettingAdapterClick() {
+        adapter.setOnClick(new SettingAdapter.SettingAdapterClick() {
             @Override
             public void onClickDelete(Group group) {
                 removeItem(group.getGroupName(), groupList.indexOf(group));
@@ -162,7 +161,7 @@ public class SettingFragment extends Fragment {
 
     private AlertDialog createInfoDialog(String targetTeamName, StringBuilder playerStringBuilder) {
         AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle("[ " + targetTeamName + " ] 멤버 [ " + playerCount + " ]  명")
+                .setTitle("[ " + targetTeamName + " ] 멤버 [ " + playerCount + " ] 명")
                 .setIcon(R.drawable.ic_groups)
                 .setMessage(playerStringBuilder.toString())
                 .setPositiveButton(R.string.ok_message, (DialogInterface, i) -> {
@@ -235,8 +234,9 @@ public class SettingFragment extends Fragment {
                         Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
                     onClickDelete(teamName, pos);
-                    Toast.makeText(getContext(), "그룹 [ " + teamName + " ] 이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "그룹 [ " + teamName + " ] 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 })
+                .setCancelable(false)
                 .create();
 
         dialog.setOnShowListener(dialogInterface -> {
@@ -302,8 +302,12 @@ public class SettingFragment extends Fragment {
 
     private void intentToModifyActivity() {
         settingBinding.fragmentSettingBtnModify.setOnClickListener(v -> {
-            Intent intent = new Intent(requireActivity(), ModifyActivity.class);
-            startActivity(intent);
+            if (groupList.size() <= 0) {
+                Toast.makeText(getContext(), "생성 된 그룹이 없습니다.", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(requireActivity(), ModifyActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
