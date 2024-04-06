@@ -79,16 +79,7 @@ public class HomeFragment extends Fragment {
         onClickHelp();
 
     }
-
-
     private void onClickHelp() {
-//        homeBinding.toolbarHome.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
-
         homeBinding.toolbarHome.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -193,6 +184,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "벌칙 [ " + randName + " ] 이/가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                     deleteItem(pos);
                 })
+                .setCancelable(false)
                 .create();
         dialog.setOnShowListener(dialogInterface -> {
             Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
@@ -200,26 +192,6 @@ public class HomeFragment extends Fragment {
             positiveButton.setTextColor(Color.RED);
             negativeButton.setTextColor(Color.BLACK);
         });
-        return dialog;
-    }
-
-
-    // 설명
-    public AlertDialog createDialog() {
-        AlertDialog dialog = new AlertDialog.Builder(getContext())
-                .setTitle(R.string.dialog_title)
-                .setIcon(R.drawable.ic_delete)
-                .setNegativeButton(R.string.cancel_message, (dialogInterface, i) ->
-                        Toast.makeText(getContext(), R.string.cancel_message, Toast.LENGTH_SHORT).show())
-                .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Toast.makeText(getContext(), "벌칙 [ " + "ㄴㅇ" + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
-
-                    }
-                })
-                .create();
         return dialog;
     }
 
@@ -303,7 +275,7 @@ public class HomeFragment extends Fragment {
             gameEditPenaltyList.add(newItem);
             adapter.notifyItemInserted(gameEditPenaltyList.size() - 1);
         } else {
-            Toast.makeText(getContext(), "벌칙은 팀원보다 많을 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "벌칙은 멤버보다 많을 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
 
     }

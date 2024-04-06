@@ -138,9 +138,10 @@ public class ModifyActivity extends AppCompatActivity {
                         Toast.makeText(this, R.string.cancel_message, Toast.LENGTH_SHORT).show())
                 .setPositiveButton(R.string.delete, (DialogInterface, i) -> {
                     Log.d("createDialog", playerName);
-                    Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 이 삭제되었습니다", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "멤버 [ " + playerName + " ] 삭제되었습니다", Toast.LENGTH_SHORT).show();
                     deleteRoom(mGroupName, mPlayerName, pos);
                 })
+                .setCancelable(false)
                 .create();
         dialog.setOnShowListener(dialogInterface -> {
             Button positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
