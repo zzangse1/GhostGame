@@ -47,17 +47,21 @@ public class HelpActivity extends AppCompatActivity {
     private void listAdd() {
         String imageUri = "drawable://";
         addItem(imageUri+R.drawable.bottom_nav);
-        addItem(imageUri+R.drawable.home_screen);
-        addItem(imageUri+R.drawable.home_choice_screen);
-        addItem(imageUri+R.drawable.grouop_add_screen);
-        addItem(imageUri+R.drawable.group_delete_screen);
-        addItem(imageUri+R.drawable.group_info_screen);
-        addItem(imageUri+R.drawable.group_modify_delete_screen);
-        addItem(imageUri+R.drawable.group_modify_plain_screen);
+        addItem(imageUri+R.drawable.setting_screen_before);
+        addItem(imageUri+R.drawable.setting_screen_add);
         addItem(imageUri+R.drawable.group_plain_screen);
-        addItem(imageUri+R.drawable.home_choice_screen);
+        addItem(imageUri+R.drawable.group_info_screen);
+        addItem(imageUri+R.drawable.group_delete_screen);
+        addItem(imageUri+R.drawable.group_modify_plain_screen);
+        addItem(imageUri+R.drawable.group_modify_add_screen);
+        addItem(imageUri+R.drawable.group_modify_delete_screen);
         addItem(imageUri+R.drawable.home_screen);
-        addItem(imageUri+R.drawable.add_screen);
+        addItem(imageUri+R.drawable.home_choice_screen);
+        addItem(imageUri+R.drawable.home_add_screen);
+        addItem(imageUri+R.drawable.game_result_plain_screen);
+        addItem(imageUri+R.drawable.game_result_screen);
+        addItem(imageUri+R.drawable.game_result_init_screen);
+
     }
 
     private void initialize(){
