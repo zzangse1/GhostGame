@@ -27,7 +27,7 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
         this.list = list;
     }
 
-    public void setOnclick(SettingAdapterClick settingAdapterClick) {
+    public void setOnClick(SettingAdapterClick settingAdapterClick) {
         this.settingAdapterClick = settingAdapterClick;
     }
     public interface SettingAdapterClick{
@@ -48,8 +48,6 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Group group = list.get(position);
-        //String groupName = group.getGroupName();
-       // holder.bind(groupName);
         holder.bind(group);
 
         holder.ib_Delete.setOnClickListener(new View.OnClickListener() {
@@ -82,8 +80,7 @@ public class SettingAdapter extends RecyclerView.Adapter<SettingAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv_GroupName;
         ImageButton ib_Delete;
-
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView){
             super(itemView);
             tv_GroupName = itemView.findViewById(R.id.tv_rv);
             ib_Delete = itemView.findViewById(R.id.ib_rv);
